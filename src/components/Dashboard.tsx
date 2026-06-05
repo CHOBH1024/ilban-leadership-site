@@ -269,7 +269,7 @@ export const Dashboard = ({ onSelectSurvey, onNavigate }: DashboardProps) => {
           <nav className="flex flex-wrap justify-center gap-6 text-sm font-bold text-slate-500 mb-6">
             <a href="#about" className="hover:text-slate-900 transition-colors">About Us</a>
             <a href="#contact" className="hover:text-slate-900 transition-colors">Contact</a>
-            <a href="#privacy" className="hover:text-slate-900 transition-colors">Privacy Policy</a>
+            <a href="/privacy.html" className="hover:text-slate-900 transition-colors">Privacy Policy</a>
             <a href="#terms" className="hover:text-slate-900 transition-colors">Terms of Service</a>
           </nav>
           <p className="text-xs text-slate-400">
