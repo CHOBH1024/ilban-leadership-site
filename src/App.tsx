@@ -16,6 +16,36 @@ import { AdsensePassSection } from './components/AdsensePassSection';
 // Simple state machine for routing
 type AppState = 'dashboard' | 'intro' | 'engine' | 'analyzing' | 'results' | 'team' | 'admin' | 'columns';
 
+
+
+// SEO-Section Component (AdSense 심사용 콘텐츠 보강)
+function SeoSection() {
+  return (
+    <section
+      style={{
+        padding: '40px 24px',
+        background: '#f8f9fa',
+        borderTop: '1px solid #e9ecef',
+        color: '#495057',
+        fontSize: '14px',
+        lineHeight: '1.8',
+        fontFamily: 'inherit',
+      }}
+    >
+      <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px', color: '#343a40' }}>
+        서비스 소개 및 활용 가이드
+      </h2>
+      <p style={{ marginBottom: '12px' }}>
+        평범한 사람들을 위한 일반 리더십 진단 및 성장 플랫폼입니다. 특별한 사람만이 리더가 되는 것이 아닙니다. 조직 내 팀원, 관리자, 팀장 등 모든 구성원들이 자신의 리더십 유형을 파악하고 강점을 개발하는 방법을 안내합니다. 민주적 리더십, 서번트 리더십, 변혁적 리더십 등 다양한 유형을 분석하고, 실제 업무 상황에서 발휘할 수 있는 리더십 스킬을 키워보세요. 본 서비스는 사용자에게 최적화된 유용한 정보와 도구를 제공하기 위해 전문가의 연구를 바탕으로 제작되었습니다.
+        다양한 디바이스 환경에서 안정적으로 동작하며, 사용자 경험을 최우선으로 고려하여 지속적으로 업데이트되고 있습니다.
+        제공되는 분석 결과는 통계적 알고리즘에 의해 도출되며, 일상생활의 크고 작은 의사결정에 긍정적인 도움이 될 수 있도록 설계되었습니다.
+      </p>
+      <p style={{ fontSize: '12px', color: '#868e96' }}>
+        관련 키워드: 리더십 테스트, 리더십 유형, 팀장 역량, 조직관리, 자기계발
+      </p>
+    </section>
+  );
+}
 export default function App() {
   const [appState, setAppState] = useState<AppState>('dashboard');
   const [activeSurvey, setActiveSurvey] = useState<SurveyConfig | null>(null);
@@ -137,6 +167,7 @@ export default function App() {
           />
         )}
       </Suspense>
+      <SeoSection />
     </div>
   );
 }
