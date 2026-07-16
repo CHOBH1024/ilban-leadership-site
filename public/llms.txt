@@ -1,0 +1,34 @@
+# 일반 리더십
+> 조직 리더십 아키타입 진단. 카리스마·서번트·코칭 유형을 분석합니다.
+
+사이트: https://ilbanleadership1024.vercel.app/
+언어: ko-KR
+유형: 웹 진단/콘텐츠 서비스
+광고: Google AdSense (ca-pub-9992037844935954)
+
+## 주요 페이지
+- / : 메인 진단 및 소개
+- /privacy.html : 개인정보 처리방침
+
+## 키워드
+리더십 테스트, 리더 유형, 조직 리더십, 관리자
+
+## 자매 사이트
+- MZ 레이더: https://mz-radar.vercel.app/
+- 번아웃 레이더: https://burnout-radar1024.vercel.app/
+- 지니어스 레이더: https://genius-radar.vercel.app/
+- FX 레이더: https://fx-radar1024.vercel.app/
+- 무드 웨더: https://mood-weather1024.vercel.app/
+- 사이드 허슬 레이더: https://side-hustle-radar.vercel.app/
+- 마인드 프리즘: https://mind-prism1024.vercel.app/
+- 아이키우기힘들다: https://aikiugihimdulda.vercel.app/
+- 알콩달콩: https://alkongdalkong.vercel.app/
+- 신앙 인사이드: https://sinang-inside.vercel.app/
+- 별의별 계산기: https://jeongbu.vercel.app/
+- 일반 리더십: https://ilbanleadership1024.vercel.app/
+- Focus Flow: https://focus-flow1024.vercel.app/
+- 미러 인사이트: https://mirrior-app-1024.vercel.app/
+- Mirror Inside Career: https://cho-tan.vercel.app/
+- 직장인 가이드: https://jikjang.vercel.app/
+- 서버구축1024: https://serverguchuk1024.vercel.app/
+- 테크팁CHO: https://techtipcho.vercel.app/
