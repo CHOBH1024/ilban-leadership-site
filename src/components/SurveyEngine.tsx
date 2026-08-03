@@ -10,9 +10,10 @@ interface SurveyEngineProps {
   survey: SurveyConfig;
   modeLimit: number;
   onComplete: (answers: Record<number, AnswerData>) => void;
+  onBack?: () => void;
 }
 
-export const SurveyEngine = ({ survey, modeLimit, onComplete }: SurveyEngineProps) => {
+export const SurveyEngine = ({ survey, modeLimit, onComplete, onBack }: SurveyEngineProps) => {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, AnswerData>>({});
   const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
@@ -143,24 +144,27 @@ export const SurveyEngine = ({ survey, modeLimit, onComplete }: SurveyEngineProp
         })}
       </div>
 
-      {/* Header Info */}
+      {/* Header Info — 명시적 뒤로가기 버튼 */}
       <div className="absolute top-8 left-4 right-4 flex justify-between items-center z-50">
-        <div className="flex items-center gap-2">
-          {currentIdx > 0 ? (
-            <button 
-              onClick={goToPrev}
-              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-colors"
-            >
-              <ArrowLeft size={18} />
-            </button>
-          ) : (
-            <div className={`w-10 h-10 rounded-full ${t.bgBg} border border-white/30 flex items-center justify-center text-xs shadow-[0_0_15px_rgba(255,255,255,0.3)]`}>
-              {survey.name[0]}
-            </div>
-          )}
-          <span className="text-white font-bold text-sm drop-shadow-md ml-1">{survey.name}</span>
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            type="button"
+            onClick={() => {
+              if (currentIdx > 0) {
+                goToPrev();
+              } else if (onBack) {
+                onBack();
+              }
+            }}
+            className="shrink-0 inline-flex items-center gap-1.5 h-10 px-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 text-white text-sm font-semibold transition-colors shadow-lg"
+            aria-label={ui.back || '뒤로가기'}
+          >
+            <ArrowLeft size={18} />
+            <span>{ui.back || '뒤로가기'}</span>
+          </button>
+          <span className="text-white font-bold text-sm drop-shadow-md ml-1 truncate">{survey.name}</span>
         </div>
-        <span className="text-white/50 text-xs font-semibold">{currentIdx + 1} / {activeQuestions.length}</span>
+        <span className="text-white/50 text-xs font-semibold shrink-0">{currentIdx + 1} / {activeQuestions.length}</span>
       </div>
 
       {/* Main Card Area */}
@@ -249,10 +253,7 @@ export const SurveyEngine = ({ survey, modeLimit, onComplete }: SurveyEngineProp
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Invisible Tap zones for Instagram Story feel */}
-      <div className="absolute inset-y-0 left-0 w-1/4 z-20 cursor-pointer" onClick={goToPrev} />
-      {/* We don't put one on the right to force them to answer, but they can swipe right to skip if implemented. */}
-    </div>
+      {/* Explicit back button only — removed invisible left tap zone */}
+</div>
   );
 };

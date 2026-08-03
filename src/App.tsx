@@ -150,7 +150,8 @@ export default function App() {
           <SurveyEngine 
             survey={activeSurvey} 
             modeLimit={modeLimit} 
-            onComplete={handleCompleteSurvey} 
+            onComplete={handleCompleteSurvey}
+              onBack={() => setAppState('intro')} 
           />
         )}
 
