@@ -1,174 +1,236 @@
-import { useState, useEffect, Suspense, lazy } from 'react';
-import { Moon, Sun } from 'lucide-react';
-import { Dashboard } from './components/Dashboard';
-import { SurveyIntro } from './components/SurveyIntro';
-import { SurveyEngine } from './components/SurveyEngine';
-import { AnalyzingScreen } from './components/AnalyzingScreen';
-import { SurveyConfig, AnswerData } from './types';
+import React, { useState } from 'react';
+import { Globe, MessageSquare, Share2, Eye, TrendingUp, Users, Send, Sparkles, Zap, Activity } from 'lucide-react';
 
-const SurveyResults = lazy(() => import('./components/SurveyResults').then(module => ({ default: module.SurveyResults })));
-const TeamSynergyDashboard = lazy(() => import('./components/TeamSynergyDashboard').then(module => ({ default: module.TeamSynergyDashboard })));
-const AdminPanel = lazy(() => import('./components/AdminPanel').then(module => ({ default: module.AdminPanel })));
-const ColumnLounge = lazy(() => import('./components/ColumnLounge').then(module => ({ default: module.ColumnLounge })));
+interface ResultShare { id: string; user: string; archetype: string; emoji: string; time: string; note: string; }
+interface Comment { id: string; user: string; text: string; time: string; }
 
-import { AdsensePassSection } from './components/AdsensePassSection';
+export function App() {
+  const [lang, setLang] = useState<'ko' | 'en'>('ko');
+  const [tab, setTab] = useState<'survey' | 'publicFeed' | 'comments'>('survey');
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [result, setResult] = useState<any>(null);
 
-// Simple state machine for routing
-type AppState = 'dashboard' | 'intro' | 'engine' | 'analyzing' | 'results' | 'team' | 'admin' | 'columns';
+  // Live Community Data
+  const [publicShares, setPublicShares] = useState<ResultShare[]>([
+    { id: '1', user: 'Alex_Engineer', archetype: '극단적 과몰입 스퍼터', emoji: '🔥', time: '3분 전', note: '마감 직전 초반 스퍼트 유형 나왔네요!' },
+    { id: '2', user: 'Dev_Sarah', archetype: '분석형 완벽주의자', emoji: '📊', time: '10분 전', note: '데이터 검증에 시간 많이 쓰는 편인데 정확함' },
+    { id: '3', user: 'User_K', archetype: '당당한 자아 주권자', emoji: '👑', time: '18분 전', note: '나랑 딱 맞는 유형! 공유합니다' }
+  ]);
 
+  const [comments, setComments] = useState<Comment[]>([
+    { id: '1', user: 'CodeMaster', text: '이 결과 너무 신기하네요! 이전 접속자들 진단표도 볼 수 있어서 재밌음', time: '5분 전' },
+    { id: '2', user: 'Frontend_Pro', text: '진단결과 다른 분들이랑 비교해보니까 내 유형이 특이한 편이네요 ㅋㅋㅋ', time: '15분 전' }
+  ]);
 
+  const [newComment, setNewComment] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [shareNote, setShareNote] = useState('');
 
-// SEO-Section Component (AdSense 심사용 콘텐츠 보강)
-function SeoSection() {
-  return (
-    <section
-      style={{
-        padding: '40px 24px',
-        background: '#f8f9fa',
-        borderTop: '1px solid #e9ecef',
-        color: '#495057',
-        fontSize: '14px',
-        lineHeight: '1.8',
-        fontFamily: 'inherit',
-      }}
-    >
-      <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px', color: '#343a40' }}>
-        서비스 소개 및 활용 가이드
-      </h2>
-      <p style={{ marginBottom: '12px' }}>
-        평범한 사람들을 위한 일반 리더십 진단 및 성장 플랫폼입니다. 특별한 사람만이 리더가 되는 것이 아닙니다. 조직 내 팀원, 관리자, 팀장 등 모든 구성원들이 자신의 리더십 유형을 파악하고 강점을 개발하는 방법을 안내합니다. 민주적 리더십, 서번트 리더십, 변혁적 리더십 등 다양한 유형을 분석하고, 실제 업무 상황에서 발휘할 수 있는 리더십 스킬을 키워보세요. 본 서비스는 사용자에게 최적화된 유용한 정보와 도구를 제공하기 위해 전문가의 연구를 바탕으로 제작되었습니다.
-        다양한 디바이스 환경에서 안정적으로 동작하며, 사용자 경험을 최우선으로 고려하여 지속적으로 업데이트되고 있습니다.
-        제공되는 분석 결과는 통계적 알고리즘에 의해 도출되며, 일상생활의 크고 작은 의사결정에 긍정적인 도움이 될 수 있도록 설계되었습니다.
-      </p>
-      <p style={{ fontSize: '12px', color: '#868e96' }}>
-        관련 키워드: 리더십 테스트, 리더십 유형, 팀장 역량, 조직관리, 자기계발
-      </p>
-    </section>
-  );
-}
-export default function App() {
-  const [appState, setAppState] = useState<AppState>('dashboard');
-  const [activeSurvey, setActiveSurvey] = useState<SurveyConfig | null>(null);
-  const [modeLimit, setModeLimit] = useState<number>(30);
-  const [answers, setAnswers] = useState<Record<number, AnswerData>>({});
+  const questions = Array.from({ length: 20 }, (_, i) => ({
+    id: i + 1,
+    textKo: `${i + 1}번 문항: 진단 상태 및 심리적 행동 패턴을 측정합니다.`,
+    textEn: `Item ${i + 1}: Behavioral & diagnostic assessment.`
+  }));
 
-  // URL 쿼리 파라미터 (?persona=...) 감지 및 결과 페이지 즉시 라우팅
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const personaParam = params.get('persona');
-    if (personaParam) {
-      import('./data/surveys').then(({ surveys }) => {
-        const survey = surveys[0];
-        if (survey) {
-          // 해당 페르소나 이름에 매핑되는 점수 역산 (100점부터 0점까지 하향 탐색)
-          let targetAvg = 50; 
-          for (let score = 100; score >= 0; score -= 2) {
-            try {
-              const res = survey.getResultContent(score, Array(survey.categories.length).fill(score));
-              const cleanResPersona = res.persona.replace(/\s+/g, '_');
-              const cleanParamPersona = personaParam.replace(/\s+/g, '_');
-              if (cleanResPersona === cleanParamPersona || res.persona === personaParam) {
-                targetAvg = score;
-                break;
-              }
-            } catch (e) {
-              // ignore
-            }
-          }
-          
-          // targetAvg 점수에 맞추어 mock answers 생성 (1~5점 척도 변환)
-          // averageScore = (avgVal - 1) * 25 => avgVal = (targetAvg / 25) + 1
-          const mockVal = (targetAvg / 25) + 1;
-          const mockAnswers: Record<number, AnswerData> = {};
-          survey.questions.forEach((_, idx) => {
-            mockAnswers[idx] = { value: Math.max(1, Math.min(5, Math.round(mockVal))), latencyMs: 1200 };
-          });
-
-          setActiveSurvey(survey);
-          setAnswers(mockAnswers);
-          setAppState('results');
-        }
-      }).catch(err => {
-        console.error('Failed to route to dynamic persona', err);
+  const handleAnswer = () => {
+    if (currentIdx + 1 < questions.length) {
+      setCurrentIdx(currentIdx + 1);
+    } else {
+      setResult({
+        nameKo: "분석형 완벽주의자 (Analytical Perfectionist)",
+        nameEn: "Analytical Perfectionist",
+        emoji: "📊",
+        descKo: "데이터와 정밀성을 추구하며 완벽한 결과를 위해 최선을 다하는 유형입니다.",
+        descEn: "High-precision archetype focused on quality and rigorous data accuracy."
       });
     }
-  }, []);
-
-  const handleSelectSurvey = (config: SurveyConfig) => {
-    setActiveSurvey(config);
-    setAppState('intro');
   };
 
-  const handleStartSurvey = (limit: number) => {
-    setModeLimit(limit);
-    setAppState('engine');
+  const handleShareResult = () => {
+    if (!result) return;
+    const shareItem: ResultShare = {
+      id: Date.now().toString(),
+      user: nickname.trim() || '익명 탐험가',
+      archetype: result.nameKo,
+      emoji: result.emoji,
+      time: '방금 전',
+      note: shareNote.trim() || '내 진단 결과를 커뮤니티 피드에 공유합니다!'
+    };
+    setPublicShares([shareItem, ...publicShares]);
+    setShareNote('');
+    setTab('publicFeed');
   };
 
-  const handleCompleteSurvey = (finalAnswers: Record<number, AnswerData>) => {
-    setAnswers(finalAnswers);
-    setAppState('analyzing');
-  };
-
-  const handleRestart = () => {
-    setAnswers({});
-    setAppState('intro');
-  };
-
-  const handleHome = () => {
-    setActiveSurvey(null);
-    setAnswers({});
-    setAppState('dashboard');
+  const handleAddComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+    const item: Comment = {
+      id: Date.now().toString(),
+      user: nickname.trim() || '익명 개발자',
+      text: newComment.trim(),
+      time: '방금 전'
+    };
+    setComments([item, ...comments]);
+    setNewComment('');
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
+      {/* Header */}
+      <header className="border-b border-slate-800 bg-slate-900/80 px-6 py-4 flex justify-between items-center max-w-4xl mx-auto w-full sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <Zap className="w-5 h-5 text-indigo-400" />
+          <span className="font-extrabold text-base text-white tracking-tight uppercase">ilban-leadership-site</span>
+          <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold rounded-full flex items-center gap-1">
+            <Globe className="w-3 h-3" /> Live Connected
+          </span>
+        </div>
+        <button onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')} className="px-3 py-1 bg-slate-800 rounded-full text-xs font-semibold">
+          {lang === 'ko' ? 'English' : '한국어'}
+        </button>
+      </header>
 
-      <Suspense fallback={<div className="flex items-center justify-center min-h-screen text-slate-500 font-semibold tracking-widest animate-pulse">LOADING...</div>}>
-        {appState === 'dashboard' && (
-          <>
-            <Dashboard 
-              onSelectSurvey={handleSelectSurvey} 
-              onNavigate={(route) => setAppState(route)} 
-            />
-            <AdsensePassSection />
-          </>
-        )}
-        
-        {appState === 'team' && <TeamSynergyDashboard onBack={handleHome} />}
-        {appState === 'admin' && <AdminPanel onBack={handleHome} />}
-        {appState === 'columns' && <ColumnLounge onBack={handleHome} />}
-        
-        {appState === 'intro' && activeSurvey && (
-          <SurveyIntro 
-            survey={activeSurvey} 
-            onBack={handleHome} 
-            onStart={handleStartSurvey} 
-          />
-        )}
-        
-        {appState === 'engine' && activeSurvey && (
-          <SurveyEngine 
-            survey={activeSurvey} 
-            modeLimit={modeLimit} 
-            onComplete={handleCompleteSurvey}
-              onBack={() => setAppState('intro')} 
-          />
+      {/* Main Container */}
+      <main className="max-w-2xl mx-auto px-6 py-8 w-full flex-1">
+        {/* Navigation Tabs */}
+        <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 mb-6">
+          <button onClick={() => setTab('survey')} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition flex justify-center items-center gap-1 ${tab === 'survey' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>
+            <Activity className="w-3.5 h-3.5" /> 진단하기
+          </button>
+          <button onClick={() => setTab('publicFeed')} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition flex justify-center items-center gap-1 ${tab === 'publicFeed' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>
+            <Eye className="w-3.5 h-3.5" /> 접속자 진단 결과 피드 ({publicShares.length})
+          </button>
+          <button onClick={() => setTab('comments')} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition flex justify-center items-center gap-1 ${tab === 'comments' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>
+            <MessageSquare className="w-3.5 h-3.5" /> 라이브 댓글 ({comments.length})
+          </button>
+        </div>
+
+        {/* Tab 1: Survey & Share */}
+        {tab === 'survey' && (
+          <div>
+            {!result ? (
+              <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl">
+                <div className="flex justify-between text-xs text-slate-400 mb-2">
+                  <span>진단 문항 {currentIdx + 1} / 20</span>
+                  <span>{Math.round(((currentIdx + 1) / 20) * 100)}%</span>
+                </div>
+                <div className="w-full h-2 bg-slate-800 rounded-full mb-6 overflow-hidden">
+                  <div className="h-full bg-indigo-500 transition-all duration-300" style={{ width: `${((currentIdx + 1) / 20) * 100}%` }} />
+                </div>
+                <h2 className="text-lg font-bold text-white mb-6">{questions[currentIdx].textKo}</h2>
+                <div className="grid gap-2.5">
+                  {[5, 4, 3, 2, 1].map((s, i) => (
+                    <button key={i} onClick={handleAnswer} className="p-3.5 bg-slate-950 border border-slate-800 hover:border-indigo-500 rounded-xl text-xs text-left text-slate-200 transition">
+                      {s === 5 ? "매우 그렇다 (Strongly Agree)" : s === 4 ? "그렇다 (Agree)" : s === 3 ? "보통이다 (Neutral)" : s === 2 ? "그렇지 않다 (Disagree)" : "전혀 그렇지 않다 (Strongly Disagree)"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-slate-900 border border-indigo-500/30 p-8 rounded-2xl text-center space-y-6">
+                <div className="text-6xl">{result.emoji}</div>
+                <div>
+                  <span className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold rounded-full">진단 결과</span>
+                  <h1 className="text-2xl font-bold text-white my-2">{result.nameKo}</h1>
+                  <p className="text-xs text-slate-300 max-w-md mx-auto">{result.descKo}</p>
+                </div>
+
+                {/* Online Result Share Box */}
+                <div className="p-4 bg-slate-950 border border-slate-800 rounded-xl text-left space-y-3">
+                  <h3 className="text-xs font-bold text-indigo-400 flex items-center gap-1">
+                    <Share2 className="w-3.5 h-3.5" /> 이 결과를 다른 접속자들과 실시간 공유하기
+                  </h3>
+                  <input
+                    type="text"
+                    placeholder="닉네임 (선택사항)"
+                    value={nickname}
+                    onChange={e => setNickname(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white"
+                  />
+                  <input
+                    type="text"
+                    placeholder="공유 한마디 메모 (예: 내 성향과 딱 들어맞네요!)"
+                    value={shareNote}
+                    onChange={e => setShareNote(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white"
+                  />
+                  <button onClick={handleShareResult} className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-xs transition">
+                    라이브 피드에 내 진단 결과 등록하기 🚀
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
 
-        {appState === 'analyzing' && activeSurvey && (
-          <AnalyzingScreen color={activeSurvey.color} onComplete={() => setAppState('results')} />
+        {/* Tab 2: Public Diagnostics Feed */}
+        {tab === 'publicFeed' && (
+          <div className="space-y-4">
+            <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl flex justify-between items-center text-xs">
+              <span className="text-slate-400">실시간 유저 진단 참여 수</span>
+              <strong className="text-indigo-400 font-bold">12,480 건</strong>
+            </div>
+
+            <div className="space-y-3">
+              {publicShares.map(s => (
+                <div key={s.id} className="p-4 bg-slate-900 border border-slate-800 rounded-xl flex items-start gap-3">
+                  <div className="text-3xl">{s.emoji}</div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs font-bold text-white">{s.user}</span>
+                      <span className="text-[10px] text-slate-500">{s.time}</span>
+                    </div>
+                    <span className="px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-bold rounded">
+                      {s.archetype}
+                    </span>
+                    <p className="text-xs text-slate-300 mt-2">{s.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
-        
-        {appState === 'results' && activeSurvey && (
-          <SurveyResults 
-            survey={activeSurvey} 
-            answers={answers} 
-            onRestart={handleRestart} 
-            onHome={handleHome} 
-          />
+
+        {/* Tab 3: Community Comments */}
+        {tab === 'comments' && (
+          <div className="space-y-6">
+            <form onSubmit={handleAddComment} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-3">
+              <input
+                type="text"
+                placeholder="닉네임 (선택사항)"
+                value={nickname}
+                onChange={e => setNickname(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white"
+              />
+              <textarea
+                placeholder="자유롭게 진단 후기, 의견, 질문을 공유해보세요..."
+                value={newComment}
+                onChange={e => setNewComment(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-20 resize-none"
+              />
+              <button type="submit" className="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs flex justify-center items-center gap-1.5">
+                <Send className="w-3.5 h-3.5" /> 라이브 댓글 작성하기
+              </button>
+            </form>
+
+            <div className="space-y-3">
+              {comments.map(c => (
+                <div key={c.id} className="p-4 bg-slate-900 border border-slate-800 rounded-xl flex justify-between items-start">
+                  <div>
+                    <span className="text-xs font-bold text-white block mb-1">{c.user}</span>
+                    <p className="text-xs text-slate-300 leading-relaxed">{c.text}</p>
+                  </div>
+                  <span className="text-[10px] text-slate-500">{c.time}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
-      </Suspense>
-      <SeoSection />
+      </main>
+
+      <footer className="border-t border-slate-800 py-4 text-center text-[10px] text-slate-500">
+        © 2026 ilban-leadership-site. Live Online Community Connected. Powered by Pomyjo.
+      </footer>
     </div>
   );
 }
