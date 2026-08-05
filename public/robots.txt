@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /admin/
-
-Sitemap: https://ilbanleadership1024.vercel.app/sitemap.xml
-Host: https://ilbanleadership1024.vercel.app
+Sitemap: https://pomyjo.com/sitemaps/ilban-leadership-site-sitemap.xml
+Sitemap: https://pomyjo.com/ilban-leadership-site/rss.xml

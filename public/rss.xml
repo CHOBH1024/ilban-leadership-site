@@ -1,40 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>일반 리더십 진단 | 나의 리더십 유형 테스트</title>
-    <link>https://ilban-leadership.vercel.app/</link>
-    <description>심리학 기반 리더십 분석으로 당신의 타고난 리더십 스타일을 발견하세요. 카리스마형, 서번트형, 코칭형 중 당신은?</description>
-    <language>ko</language>
-    <lastBuildDate>Thu, 04 Jun 2026 05:44:01 GMT</lastBuildDate>
-    <category>리더십, 리더십테스트, 리더유형, 심리진단, 직장생활</category>
-    <atom:link href="https://ilban-leadership.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>
+<channel>
+  <title>ilban-leadership-site - Diagnostic Suite & Platform</title>
+  <link>https://pomyjo.com/ilban-leadership-site</link>
+  <description>Official diagnostic tool and psychological insights platform for ilban-leadership-site.</description>
+  <language>ko-kr</language>
+  <lastBuildDate>Tue, 04 Aug 2026 00:00:00 GMT</lastBuildDate>
+  <atom:link href="https://pomyjo.com/ilban-leadership-site/rss.xml" rel="self" type="application/rss+xml" />
+  
   <item>
-    <title>일반 리더십 진단 | 나의 리더십 유형 테스트 — 리더십 유형 진단 시작하기</title>
-    <link>https://ilban-leadership.vercel.app/</link>
-    <description><![CDATA[심리학 기반 리더십 분석으로 당신의 타고난 리더십 스타일을 발견하세요. 카리스마형, 서번트형, 코칭형 중 당신은?]]></description>
-    <pubDate>Thu, 04 Jun 2026 05:44:01 GMT</pubDate>
-    <guid isPermaLink="true">https://ilban-leadership.vercel.app/</guid>
+    <title>ilban-leadership-site Diagnostic Tool (Korean)</title>
+    <link>https://pomyjo.com/ilban-leadership-site</link>
+    <description>Take the official diagnostic test on ilban-leadership-site.</description>
+    <pubDate>Tue, 04 Aug 2026 00:00:00 GMT</pubDate>
+    <guid>https://pomyjo.com/ilban-leadership-site#ko</guid>
   </item>
+  
   <item>
-    <title>🦅 카리스마형 리더 — 리더십 유형 진단 유형 분석</title>
-    <link>https://ilban-leadership.vercel.app/?persona=%EC%B9%B4%EB%A6%AC%EC%8A%A4%EB%A7%88%ED%98%95%20%EB%A6%AC%EB%8D%94</link>
-    <description><![CDATA[혼돈 속에서 방향을 제시하고 팀을 이끄는 타고난 지도자 | 당신은 강력한 의사결정 능력과 결단력으로 팀을 이끄는 카리스마형 리더입니다. 위기 상황에서 가장 빛나며, 팀원들이 자연스럽게 당신을 중심으로 모입니다.]]></description>
-    <pubDate>Thu, 04 Jun 2026 05:44:01 GMT</pubDate>
-    <guid isPermaLink="false">https://ilban-leadership.vercel.app#%EC%B9%B4%EB%A6%AC%EC%8A%A4%EB%A7%88%ED%98%95%20%EB%A6%AC%EB%8D%94</guid>
+    <title>ilban-leadership-site Diagnostic Tool (English Global)</title>
+    <link>https://pomyjo.com/ilban-leadership-site/en</link>
+    <description>Take the official global diagnostic test on ilban-leadership-site.</description>
+    <pubDate>Tue, 04 Aug 2026 00:00:00 GMT</pubDate>
+    <guid>https://pomyjo.com/ilban-leadership-site#en</guid>
   </item>
-  <item>
-    <title>🌱 코칭형 리더 — 리더십 유형 진단 유형 분석</title>
-    <link>https://ilban-leadership.vercel.app/?persona=%EC%BD%94%EC%B9%AD%ED%98%95%20%EB%A6%AC%EB%8D%94</link>
-    <description><![CDATA[질문으로 잠재력을 끌어내고 팀원의 성장이 곧 성과인 리더 | 당신은 팀원 한 명 한 명의 강점을 발굴하고 성장을 이끄는 데 탁월합니다. 직접 답을 주기보다 올바른 질문으로 스스로 답을 찾게 만드는 진정한 멘토형 리더입니다.]]></description>
-    <pubDate>Thu, 04 Jun 2026 05:44:01 GMT</pubDate>
-    <guid isPermaLink="false">https://ilban-leadership.vercel.app#%EC%BD%94%EC%B9%AD%ED%98%95%20%EB%A6%AC%EB%8D%94</guid>
-  </item>
-  <item>
-    <title>🤝 서번트 리더 — 리더십 유형 진단 유형 분석</title>
-    <link>https://ilban-leadership.vercel.app/?persona=%EC%84%9C%EB%B2%88%ED%8A%B8%20%EB%A6%AC%EB%8D%94</link>
-    <description><![CDATA[나를 비워 팀을 채우는, 신뢰로 움직이는 따뜻한 리더 | 당신은 팀원의 필요와 성장을 자신보다 먼저 생각하는 서번트 리더입니다. 강압이 아닌 신뢰와 관계로 팀을 이끌며, 팀원들이 자발적으로 따르게 만드는 힘을 가지고 있습니다.]]></description>
-    <pubDate>Thu, 04 Jun 2026 05:44:01 GMT</pubDate>
-    <guid isPermaLink="false">https://ilban-leadership.vercel.app#%EC%84%9C%EB%B2%88%ED%8A%B8%20%EB%A6%AC%EB%8D%94</guid>
-  </item>
-  </channel>
+</channel>
 </rss>
