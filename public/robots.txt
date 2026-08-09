@@ -2,3 +2,9 @@ User-agent: *
 Allow: /
 Sitemap: https://pomyjo.com/sitemaps/ilban-leadership-site-sitemap.xml
 Sitemap: https://pomyjo.com/ilban-leadership-site/rss.xml
+
+User-agent: Yeti
+Allow: /
+
+User-agent: NaverBot
+Allow: /
